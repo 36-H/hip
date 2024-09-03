@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"github.com/astaxie/beego/logs"
 	"net"
 	"sync"
 	"github.com/xtaci/smux"
@@ -76,12 +75,10 @@ func (mgr *SessionManager) CloseSession(clientId string) {
 func (mgr *SessionManager)Range(f func(k string,v *Session) bool){
 	mgr.lock.Lock()
 	defer mgr.lock.Unlock()
-	for k,v := range mgr.sessions{
-		if !f(k,v){
-			logs.Info(fmt.Sprintf("[Server] Client[%s] is offline",k))
-			delete(mgr.sessions,k)
-		}else{
-			logs.Debug(fmt.Sprintf("[Server] Client[%s] is online",k))
+	for k, v := range mgr.sessions {
+		ok := f(k, v)
+		if !ok {
+			delete(mgr.sessions, k)
 		}
 	}
 }

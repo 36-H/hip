@@ -65,9 +65,14 @@ func (s *Server)handleConn(conn net.Conn){
 func (s *Server)checkOnlineInterval(){
 	tick := time.NewTicker(3 * time.Second)
 	defer tick.Stop()
-	for range tick.C{
-		s.sessionManager.Range(func(k string,v *Session) bool{
-			return  !v.Connection.IsClosed()
+	for range tick.C {
+		s.sessionManager.Range(func(k string, v *Session) bool {
+			if v.Connection.IsClosed() {
+				logs.Info(fmt.Sprintf("[Server] Client[%s] is offline",v.ClientId))
+				return false
+			}
+			logs.Debug(fmt.Sprintf("[Server] Client[%s] is online",v.ClientId))
+			return true
 		})
 	}
 }
