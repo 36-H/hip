@@ -7,4 +7,7 @@ require (
 	github.com/xtaci/smux v1.5.28
 )
 
-require github.com/shiena/ansicolor v0.0.0-20151119151921-a422bbe96644 // indirect
+require (
+	github.com/alecthomas/gometalinter v3.0.0+incompatible
+	github.com/shiena/ansicolor v0.0.0-20151119151921-a422bbe96644 // indirect
+)

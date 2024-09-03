@@ -1,31 +1,48 @@
 package main
 
-import "hip/common"
-
+import (
+	"flag"
+	"hip/common"
+)
 
 func main() {
+	var confFile string
+	flag.StringVar(&confFile, "c", "", "config file")
+	flag.Parse()
+
+	conf, err := ParseConfig(confFile)
+	if err != nil {
+		panic(err)
+	}
+
+	listenerConfigs, err := ParseListenerConfig(conf.ListenerFile)
+	if err != nil {
+		panic(err)
+	}
+
 	sessionMgr := NewSessionManager()
-	listener := NewListener(&common.ProxyProtocol{
-		ClientId:         "test-client",
-		PublicProtocol:   "tcp",
-		PublicIP:         "0.0.0.0",
-		//暴露在公网的端口
-		PublicPort:       30000,
-		InternalProtocol: "tcp",
-		//转发到内网的端口
-		IternalIp:        "127.0.0.1",
-		InternalPort:     3000,
-	}, sessionMgr)
-	defer listener.Close()
-	go func() {
-		err := listener.ListenAndServer()
-		if err != nil {
-			panic(err)
-		}
-	}()
+
+	for _, listenerConfig := range listenerConfigs {
+		listener := NewListener(&common.ProxyProtocol{
+			ClientId:         listenerConfig.ClientID,
+			PublicProtocol:   listenerConfig.PublicProtocol,
+			PublicIP:         listenerConfig.PublicIP,
+			PublicPort:       listenerConfig.PublicPort,
+			InternalProtocol: listenerConfig.InternalProtocol,
+			InternalIp:       listenerConfig.InternalIP,
+			InternalPort:     listenerConfig.InternalPort,
+		}, sessionMgr)
+		go func() {
+			defer listener.Close()
+			err := listener.ListenAndServer()
+			if err != nil {
+				panic(err)
+			}
+		}()
+	}
 	//提供内网机器连接公网机器的服务端
 	server := NewServer(":35000", sessionMgr)
-	err := server.ListenAndServer()
+	err = server.ListenAndServer()
 	if err != nil {
 		panic(err)
 	}

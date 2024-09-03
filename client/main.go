@@ -1,6 +1,12 @@
 package main
 
-func main(){
-	c := NewClient("test-client","127.0.0.1:35000")
+import "flag"
+
+func main() {
+	var clientId, serverAddr string
+	flag.StringVar(&clientId, "client_id", "", "client id")
+	flag.StringVar(&serverAddr, "server_addr", "", "server address")
+	flag.Parse()
+	c := NewClient(clientId, serverAddr)
 	c.Run()
 }

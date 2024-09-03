@@ -85,7 +85,7 @@ func (c *Client) handleSteam(stream net.Conn) {
 
 	switch proxyProtocol.InternalProtocol {
 	case "tcp":
-		localConn, err := net.Dial("tcp", fmt.Sprintf("%s:%d", proxyProtocol.IternalIp, proxyProtocol.InternalPort))
+		localConn, err := net.Dial("tcp", fmt.Sprintf("%s:%d", proxyProtocol.InternalIp, proxyProtocol.InternalPort))
 		if err != nil {
 			logs.Error(fmt.Sprintf("connect to local addr fail: %v", err))
 			return

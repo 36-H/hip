@@ -2,9 +2,9 @@ package main
 
 import (
 	"fmt"
+	"github.com/xtaci/smux"
 	"net"
 	"sync"
-	"github.com/xtaci/smux"
 )
 
 type Session struct {
@@ -71,8 +71,7 @@ func (mgr *SessionManager) CloseSession(clientId string) {
 	delete(mgr.sessions, clientId)
 }
 
-
-func (mgr *SessionManager)Range(f func(k string,v *Session) bool){
+func (mgr *SessionManager) Range(f func(k string, v *Session) bool) {
 	mgr.lock.Lock()
 	defer mgr.lock.Unlock()
 	for k, v := range mgr.sessions {

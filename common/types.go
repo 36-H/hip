@@ -9,7 +9,7 @@ import (
 )
 
 var (
-	WriteTimeOut = time.Second * 3
+	WriteTimeOut    = time.Second * 3
 	ReconnetTimeOut = time.Second * 1
 )
 
@@ -34,7 +34,7 @@ type ProxyProtocol struct {
 	PublicIP         string
 	PublicPort       uint16
 	InternalProtocol string
-	IternalIp        string
+	InternalIp       string
 	InternalPort     uint16
 }
 

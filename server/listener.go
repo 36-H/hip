@@ -15,13 +15,13 @@ type Listener struct {
 	proxyProtocol  *common.ProxyProtocol
 	inner          net.Listener
 	sessionManager *SessionManager
-	CloseOnce sync.Once
-	close     chan struct{}
+	CloseOnce      sync.Once
+	close          chan struct{}
 }
 
-func NewListener(proxyProtocol *common.ProxyProtocol,sessionManager *SessionManager) *Listener {
+func NewListener(proxyProtocol *common.ProxyProtocol, sessionManager *SessionManager) *Listener {
 	return &Listener{
-		proxyProtocol: proxyProtocol,
+		proxyProtocol:  proxyProtocol,
 		close:          make(chan struct{}),
 		sessionManager: sessionManager,
 	}
@@ -81,10 +81,10 @@ func (l *Listener) handleTcp(conn net.Conn) {
 	}
 
 	//数据拷贝
-	go func ()  {
+	go func() {
 		defer tunelConnet.Close()
 		defer conn.Close()
-		io.Copy(tunelConnet, conn)	
+		io.Copy(tunelConnet, conn)
 	}()
 	//这里会阻塞 所以上面协程的代码不能放到下方去
 	io.Copy(conn, tunelConnet)
